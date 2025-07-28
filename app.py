@@ -22,15 +22,16 @@ app = Flask(__name__)
 # 🔴 YENİ: strict_slashes=False tüm uygulama için ayarlanabilir.
 # Bu, /rota ve /rota/ adreslerinin aynı şekilde davranmasını sağlar.
 app.url_map.strict_slashes = False
-port = 5050
+port = 5000
 
 # Orijin tanımı (CORS)
-CORS(app, 
-    resources={r"/*": {"origins": "http://localhost:5173"}}, 
-    supports_credentials=True,
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"] # OPTIONS metodunu eklemek önemlidir
-)
+# CORS(app, 
+#     resources={r"/*": {"origins": "http://localhost:5173"}}, 
+#     supports_credentials=True,
+#     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"] # OPTIONS metodunu eklemek önemlidir
+# )
 
+CORS(app) # Tüm domainlerden erişime izin verir, üretimde kısıtlanabilir
 # Gelen tüm istekleri logla (debug için)
 @app.before_request
 def log_request_info():

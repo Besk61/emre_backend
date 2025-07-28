@@ -70,4 +70,4 @@ app.register_blueprint(stok_analiz_bp, url_prefix='/stokAnaliz')
 
 if __name__ == '__main__':
     print(f"✅ API http://localhost:{port} üzerinden çalışıyor")
-    app.run(port=port, debug=True)
+    app.run(debug=True, host='0.0.0.0', port=80)

@@ -74,19 +74,46 @@ def add_cihaz():
 @cihazlar_bp.route('/<string:code>', methods=['PUT'])
 def update_cihaz(code):
     data = request.get_json()
+    
+    # Gelen veride gerekli alanların olup olmadığını kontrol edelim
+    required_keys = ['name', 'category', 'stock', 'minStock', 'price']
+    if not all(key in data for key in required_keys):
+        return jsonify({"error": "Eksik veri gönderildi."}), 400
+
     conn = get_db_connection()
-    conn.execute("""
-        UPDATE CIHAZLAR_YENI
-        SET "CIHAZ-KODU" = ?, "CIHAZ-TIPI" = ?, ADET = ?, minstok = ?, FİYAT = ?,
-            SON_GUNCELLEME = CURRENT_TIMESTAMP, BARKOD = ?, "SERI-NUMARASI" = ?
-        WHERE "CIHAZ-KODU" = ?
-    """, (
-        data['name'], data['category'], data['stock'], data['minStock'], data['price'],
-        data['barkod'], data['seriNo'], code
-    ))
-    conn.commit()
-    conn.close()
-    return "", 200
+    try:
+        conn.execute("""
+            UPDATE CIHAZLAR_YENI
+            SET "CIHAZ-KODU" = ?, "CIHAZ-TIPI" = ?, ADET = ?, minstok = ?, FİYAT = ?,
+                SON_GUNCELLEME = CURRENT_TIMESTAMP, BARKOD = ?, "SERI-NUMARASI" = ?
+            WHERE "CIHAZ-KODU" = ?
+        """, (
+            data['name'],          # Yeni ürün kodu
+            data['category'],
+            data['stock'],
+            data['minStock'],
+            data['price'],
+            data.get('barkod', ''),    # Opsiyonel alanlar için .get() kullan
+            data.get('seriNo', ''),
+            code                   # Eski ürün kodu (URL'den gelen)
+        ))
+        conn.commit()
+        
+        # Etkilenen satır sayısını kontrol et
+        if conn.total_changes == 0:
+            conn.close()
+            return jsonify({"error": f"'{code}' kodlu ürün bulunamadı veya güncellenecek bir değişiklik yok."}), 404
+            
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        print(f"Güncelleme hatası: {e}")
+        return jsonify({"error": "Veritabanı güncelleme hatası."}), 500
+    finally:
+        if conn:
+            conn.close()
+            
+    return jsonify({"message": "Ürün başarıyla güncellendi."}), 200
 
 @cihazlar_bp.route('/<string:code>', methods=['DELETE'])
 def delete_cihaz(code):

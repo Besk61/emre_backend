@@ -22,7 +22,7 @@ app = Flask(__name__)
 # 🔴 YENİ: strict_slashes=False tüm uygulama için ayarlanabilir.
 # Bu, /rota ve /rota/ adreslerinin aynı şekilde davranmasını sağlar.
 app.url_map.strict_slashes = False
-port = 80
+port = 5000
 
 # Orijin tanımı (CORS)
 # CORS(app, 
@@ -73,4 +73,4 @@ app.register_blueprint(stok_analiz_bp, url_prefix='/stokAnaliz')
 
 if __name__ == '__main__':
     print(f"✅ API http://localhost:{port} üzerinden çalışıyor")
-    app.run(debug=True, host='0.0.0.0', port=80)
+    app.run(debug=True, host='0.0.0.0', port=5000)

@@ -31,7 +31,10 @@ port = 80
 #     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"] # OPTIONS metodunu eklemek önemlidir
 # )
 
-CORS(app) # Tüm domainlerden erişime izin verir, üretimde kısıtlanabilir
+
+CORS(app,
+     resources={r"/*": {"origins": "*"}},
+     supports_credentials=True)
 # Gelen tüm istekleri logla (debug için)
 @app.before_request
 def log_request_info():

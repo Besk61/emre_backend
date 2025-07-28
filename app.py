@@ -22,7 +22,7 @@ app = Flask(__name__)
 # 🔴 YENİ: strict_slashes=False tüm uygulama için ayarlanabilir.
 # Bu, /rota ve /rota/ adreslerinin aynı şekilde davranmasını sağlar.
 app.url_map.strict_slashes = False
-port = 5000
+port = 80
 
 # Orijin tanımı (CORS)
 # CORS(app, 

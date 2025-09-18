@@ -310,31 +310,32 @@ def send_daily_stock_report():
     """Günlük stok raporunu ve veritabanı yedeğini oluştur ve gönder"""
     print("Günlük rapor ve yedekleme işlemi başlatılıyor...")
     
-    # Excel raporu oluştur
-    excel_filepath, excel_filename = create_stock_excel_report()
-    
-    # Veritabanı yedeği oluştur
-    db_filepath, db_filename = create_database_backup()
-    
-    # Excel raporunu gönder
-    if excel_filepath and excel_filename:
-        success_excel = send_excel_via_telegram(excel_filepath, excel_filename)
-        if success_excel:
-            print(f"Excel dosyası korundu: {excel_filepath}")
+    with app.app_context():
+        # Excel raporu oluştur
+        excel_filepath, excel_filename = create_stock_excel_report()
+        
+        # Veritabanı yedeği oluştur
+        db_filepath, db_filename = create_database_backup()
+        
+        # Excel raporunu gönder
+        if excel_filepath and excel_filename:
+            success_excel = send_excel_via_telegram(excel_filepath, excel_filename)
+            if success_excel:
+                print(f"Excel dosyası korundu: {excel_filepath}")
+            else:
+                print("Excel raporu Telegram'a gönderim başarısız")
         else:
-            print("Excel raporu Telegram'a gönderim başarısız")
-    else:
-        print("Excel raporu oluşturulamadı")
-    
-    # Veritabanı yedeğini gönder
-    if db_filepath and db_filename:
-        success_db = send_database_via_telegram(db_filepath, db_filename)
-        if success_db:
-            print(f"Veritabanı yedeği korundu: {db_filepath}")
+            print("Excel raporu oluşturulamadı")
+        
+        # Veritabanı yedeğini gönder
+        if db_filepath and db_filename:
+            success_db = send_database_via_telegram(db_filepath, db_filename)
+            if success_db:
+                print(f"Veritabanı yedeği korundu: {db_filepath}")
+            else:
+                print("Veritabanı yedeği Telegram'a gönderim başarısız")
         else:
-            print("Veritabanı yedeği Telegram'a gönderim başarısız")
-    else:
-        print("Veritabanı yedeği oluşturulamadı")
+            print("Veritabanı yedeği oluşturulamadı")
     
     print("Günlük yedekleme işlemi tamamlandı!")
 
